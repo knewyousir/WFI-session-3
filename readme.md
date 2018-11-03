@@ -1,421 +1,34 @@
 # III - Server Side with ExpressJS
 
-<!-- and an Introduction to GIT -->
-
 Today we continue to work with NPM, responsive design and start looking at Expressjs - exploring some of its capabilities.
 
 ## Homework
 
-* watch a [Crash Course on Express](https://youtu.be/gnsO8-xJ8rs) and follow along in your editor
-* download the done branch of this repo, review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/) to mLab - particulaly the sections 'MongoDB driver' for `app-alt.js` and 'mLab Data API' for `main-alt.js`)
-* Optional - do the Git / Github tutorial at [the Git Website](https://try.github.io/levels/1/challenges/1)
-
-<!-- ## GIT and GITHUB
-
-Git - a version control system originally invented for use developing Linux by Linus Torvalds - integrates with Github to permit collaboration.
-
-There is a simple tutorial for Git on [the Git Website](https://try.github.io/levels/1/challenges/1) which is highly recommended for those new to git and github.
-
-1. make sure terminal is in the correct directory using `cd` (drag-and-drop, copy paste)
-1. initialize the repo:
-
-```sh
-git init
-```
-
-Configuring Git for the first time (only if you haven't done this before):
-
-```sh
-git config --global user.name " ***** "
-git config --global user.email " ***** "
-git config --list
-```
-
-* Add (watch) all your files:
-
-```sh
-git add .
-```
-
-Perform an initial commit. (Once you have made changes you will need to add and commit them again.)
-
-```sh
-git commit -m 'initial commit'
-```
-
-Note: `git commit` without the `-m` flag goes into VI - a text popular UNIX text editor.
-
-To avoid this always using the -m flag when committing. (If you end up in VI, hit `ESC` and type `:q` to exit and try again.)
-
-* Git Status  - use this command liberally until your familiar with the system.
-
-```sh
-$ git status
-> On branch master
-> nothing to commit, working directory clean
-```
-
-* Create and checkout a new branch:
-
-```sh
-git branch <new branchname>
-git checkout <new branchname>
-git branch
-```
-
-Merge branches:
-
-* make sure the branch you want to merge is clear (`$ git status` > clean)
-* checkout the branch you want to merge into
-* run status on that branch too (make sure it is clear)
-
-```sh
-git checkout master
-git status
-git merge <new branchname>
-```
-
-* delete branches:
-
-```sh
-git branch -d <branchname>
-```
-
-or (to delete an unmerged branch)
-
-```sh
-git branch -D <branchname>
-```
-
-Note: be sure to delete while _not_ on the targeted branch
-
-* pushing files to remote repos - Github
-
-Note: always create a .gitignore file to prevent local working/utility files from being pushed e.g.:
-
-```js
-.DS_store
-node_modules
-```
-
-* Log into Github, create and new repo and follow the instructions e.g.:
-
-```sh
-git remote add origin https://github.com/<nameofgithubrepo>
-git push -u origin master
-```
-
-Finally - when downloading a github repo use the `clone` method to move it to your local disk while retaining the git history and branches. -->
-
-<!-- ## Babel
-
-* cd into the session directory install the dev-dependencies and run the script:
-
-```sh
-npm install
-```
-
-Install the dependencies babel-cli and babel-preset-es2015 and add presets to package.json.
-
-`$ npm install babel-cli --save-dev`
-
-`$ npm install --save-dev babel-preset-es2015`
-
-Note the documentation for [babel-cli](https://babeljs.io/docs/usage/cli/) and the message:
-
-`🙌 Thanks for using Babel: we recommend using babel-preset-env now: please read babeljs.io/env to update!`
-
-Add a babel script (note the output path references a min folder we need to create) and babel presets to package.json:
-
-```js
-{
-  ...
-  "scripts": {
-    ...
-    "babel": "babel app/js/main.js --watch --source-maps --out-file app/js/main-compiled.js",
-    ...
-  },
-
-  "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-preset-es2015": "^6.22.0",
-    ...
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  }
-}
-```
-
-Add babel to our script:
-
-```bash
-"boom!": "concurrently \"npm run start\" \"npm run babel\" "
-```
-
-Change the link to the main.js in index.html to point to the new file that babel will create.
-
-`<script src="js/main-compiled.js"></script>`
-
-and run `npm run boom!`.
-
-Remember, you can pick and choose commands or create new batches using concurrently. For users using VS Code for SASS transpiling and browser refresh:  `npm run babel` or 
-
-`"boomy!": "concurrently \"npm run start\" \"npm run babel\" "`
- -->
-
-Clone today's session:
-
-```sh
-git clone https://github.com/front-end-intermediate/session-3.git
-cd session-3
-code .
-npm install
-```
-
-## Responsive Design with SASS
-
-* continued from Session II:
-
-### Concurrently
-
-As it stands we need multiple terminal tabs to run our npm scripts. To improve this we will install a simple utility called Concurrently and write a 'master' npm script.
-
-Stop all processes running in the terminals with Control-c and dispose of them.
-
-Use the remaining terminal to install and register Concurrently:
-
-* `$ npm install concurrently --save-dev`
-
-Add some new scripts:
-
-```js
-"boom!": "concurrently \"npm run start\" \"npm run json\" \"npm run sassy\" ",
-"boomlet!": "concurrently \"npm run start\" \"npm run json\" "
-```
-
-DEMO - `$ npm run boom!`
-
-* Examine the output and inspect the html in the developer tool.
-* Cancel the process with ctrl-c and add mapping to the NPM script:
-
-```js
-  "sassy": "node-sass --watch \"scss\"  --output \"app/css/\" --source-map true",
-```
-
-Run all processes:
-
-* `$ npm run boom!`
-
-Note the map file and the styles in the browser developer tool.
-
-### Review
-
-* the meta tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
-* `min-width` vs `max-width` in media queries
-* mobile first design using `min-width` to add features to wide screens
-* SASS nesting and media queries
-
-## CSS Preprocessing in the VS Code
-
-Most editors will offer the ability do preprocessing as well as browser refresh.
-
-[Visual Studio Code](https://code.visualstudio.com) offers an array of plug-ins that we can use to perform the SASS preprocessing function. VS Code is remarkably flexible and offers a setting for almost anything you could wish for. See the Visual Studio Code [documentation](https://code.visualstudio.com/docs/getstarted/settings) for changing settings.
-
-[Live Sass Compiler](https://marketplace.visualstudio.com/items?itemName=ritwickdey.live-sass) for VS Code.
-
-Quit the `boom!` process and run `boomlet`.
-
-Install Live SASS Compiler and set the _workspace settings_ as shown:
-
-```js
-{
-    "liveSassCompile.settings.formats": [
-        {
-            "savePath": "app/css",
-            "format": "expanded"
-        }
-    ],
-    "liveSassCompile.settings.excludeList": [
-        "**/node_modules/**",
-        ".vscode/**",
-        "**/other/**"
-    ]
-}
-```
-
-Note the `.vscode` directory that is created for per project settings.
-
-Click the `Watch Sass` button at the bottom of the editor.
-
-### The Navbar
-
-Note - the code responsible for adding the logo in `main.js` has been commented out:
-
-```js
-// const logo = document.querySelector('#main ul li');
-// logo.classList.add('logo');
-// logo.firstChild.innerHTML = '<img src="img/logo.svg" />';
-```
-
-Add a logo div to the HTML:
-
-```html
-  <nav id="main">
-      <div class="logo"><img src="img/logo.svg" /></div>
-    <div class="navitems"></div>
-  </nav>
-```
-
-Comment out the .logo related css in `_nav.scss` and make this change in `main.js`:
-
-`navbar.innerHTML = markup;`
-
-Check to make sure you can see the logo in the browser.
-
-Allow the logo to display only on small screens:
-
-```css
-.logo {
-  background: white;
-  @media (min-width: $break-two) {
-    display: none;
-  }
-}
-
-.logo img {
-  padding-top: 0.25rem;
-  width: 2.5rem;
-}
-```
-
-And allow the navitems to display only on wide screen:
-
-```css
-.navitems {
-  display: none;
-  @media (min-width: $break-two) {
-    display: block;
-  }
-}
-```
-
-Temporarily display the navitems on small screens:
-
-```css
-.navitems {
-  // display: none;
-  @media (min-width: $break-two) {
-    display: block;
-  }
-}
-```
-
-Set the `ul` to display as a row or column depending on browser width using a media query:
-
-```css
-ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  @media (min-width: $break-two) {
-    flex-direction: row;
-    height: 2.5rem;
-    justify-content: center;
-    align-items: center;
-  }
-}
-```
-
-Format the list items:
-
-```css
-li {
-  flex: 1;
-  padding: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-  @media (min-width: $break-two) {
-    text-align: center;
-    border-bottom: none;
-  }
-}
-```
-
-Rehide the navitems on small screen and code the logo to add a class to the document that we can use to show and hide them.
-
-```js
-const logo = document.querySelector('.logo');
-
-logo.addEventListener('click', showMenu);
-
-function showMenu() {
-  document.body.classList.toggle('show');
-  event.preventDefault();
-}
-```
-
-Add to `_nav.scss`:
-
-```css
-body.show .navitems {
-  display: block !important;
-}
-```
-
-Close the navigation when one of the items is selected:
-
-```js
-function showMenu() {
-  document.body.classList.toggle('show');
-  const navLinks = document.querySelectorAll('.navitems a');
-  navLinks.forEach(link => link.addEventListener('click', dump));
-  console.log(navLinks);
-  event.preventDefault();
-}
-
-function dump() {
-  document.body.classList.toggle('show');
-}
-```
-
-### CSS Animation
-
-You cannot animate between `display: block` and `display: none`. These are binary conditions. We will use `max-height` instead.
-
-```css
-.navitems {
-  // display: none;
-
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.5s;
-
-  @media (min-width: $break-two) {
-    // display: block;
-
-    max-height: 2.5rem;
-    overflow: hidden;
-  }
-}
-```
-
-```css
-.show .navitems {
-  // display: block !important;
-
-  max-height: 20rem;
-}
-```
+* Watch a [Crash Course on Express](https://youtu.be/gnsO8-xJ8rs) and follow along in your editor
+* Download the done branch of this repo, review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/)
 
 ## NODE and Express JS
 
 ### NODE
 
+As an implementation of a JS engine outside the browser, Node can run JS on the server:
+
+```sh
+cd other
+node script.js
+```
+
+```js
+var addItems = function (num1, num2) {
+  console.log( num1 + num2 )
+}
+
+addItems(1,2)
+```
+
 A simple node.js [server](https://nodejs.org/en/about/).
 
-DEMO: Save this as `app.js` in the project folder and run it using `node script.js`
+DEMO: Save this into `script.js` in the `other` folder and run it using `node script.js`
 
 ```js
 const http = require('http');
@@ -436,37 +49,60 @@ server.listen(port, hostname, () => {
 
 ### Express
 
-The local server we are using (browser sync or live server) won't cut it when it comes to all the features needed to develop a website with the http services we will need.
+```sh
+npm init -y
+npm i -S express
+```
 
 [Express](https://expressjs.com/en/api.html#req) is a framework for building web applications on Node.js. It simplifies the server creation process and allows you to use JavaScript as your server-side language.
 
 Common web-development tasks are not directly supported by Node. If you want to add specific handling for different HTTP verbs (e.g. GET, POST, DELETE, etc.), separately handle requests at different URL paths ("routes"), serve static files, or use templates to dynamically create the response, you will need to write the code yourself or use Express.
 
-<!-- Aside: Here is the [generator](https://expressjs.com/en/starter/generator.html). 
-
-Note the directory structure and the use of [Pug](https://pugjs.org/api/getting-started.html) as the default templating tool.
-
-Let's look at the canonical "Hello world" [example](https://expressjs.com/en/starter/hello-world.html). -->
-
-Install express using npm `$ npm install --save express`
-
-Create `app.js` in the root folder of our project.
+Create `index.js` in the root folder of our project.
 
 ```js
-// require the npm library
 const express = require('express');
-// create a var for the app to be built using express
-// app is the global variable namespace for the program we are building
 const app = express();
 const port = 9000;
 
-app.get('/', (req, res) => res.send('Hello World!')); // our first route
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
 
-app.get('/watchlist', function(req, res) {
-  // our second route
+app.listen(port, function() {
+  console.log(`Listening on port ${port}!`);
+});
+```
+
+Run with `$ node index.js` and test the `watchlist` route above.
+
+Note that `console.log` is using the terminal, _not_ the browser's console. 
+
+Also note the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb.
+
+Set up an NPM start command:
+
+```js
+"scripts": {
+  "start": "node index.js"
+},
+```
+
+Add a second route and restart the server:
+
+```js
+const express = require('express');
+const app = express();
+const port = 9000;
+// our first route
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+}); 
+// our second route
+app.get('/music', function(req, res) {  
   res.send(`
-    <h1>Watchlist</h1>
-    <p>Commentary on Watchlists will go here.</p>
+    <h1>music</h1>
+    <p>Commentary on music will go here.</p>
     `);
 });
 
@@ -475,79 +111,181 @@ app.listen(port, function() {
 });
 ```
 
-Run with `$ node app.js` and test the `watchlist` route above.
+Visit [http://localhost:9000/music](http://localhost:9000/music)
 
-Note that console.log is now using the terminal, _not_ the browser's console. We are working server side.
-
-Note the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb used in our [basic express route](https://expressjs.com/en/starter/basic-routing.html).
-
-Add a second route that includes a variable:
+Edit the second route to include a variable and restart the server:
 
 ```js
-app.get('/entry/:name', function(req, res) {
-  let name = req.params.name;
-  res.send(`
-    <h1>${name}</h1>
-    <p>Commentary on ${name} will go here.</p>
+app.get('/music/:type', function(req, res) {
+  let type = req.params.type;
+    res.send(`
+    <h1>Music</h1>
+    <p>Commentary on ${type} music will go here.</p>
     `);
 });
 ```
 
-```js
-app.get('reverse/:name', (req, res) => {
-  const reverse = [..req.params.name].reverse().join('');
-  res.send(reverse)
-})
-```
-
-Test in the browser after restarting the node process.: `http://localhost:9000/entry/watchlist`.
-
-<!-- Multiple parameters:
-
-app.get('.reverse/:name', (req, res) => {
-  const reverse = [...req.params.name].reverse().join('');
-  res.send(reverse)
-})
-
-```js
-app.get('/entry/:name?/:link', function(req, res) {
-  let name = req.params.name;
-  let link = `${req.params.link}`;
-  res.send(`
-    <h1>${name}</h1>
-    <p>Commentary on ${name} will go here.</p>
-    <p>${link}</p>
-    `);
-});
-```
-
-Test in the browser after restarting the node app: `http://localhost:9000/entry/watchlist/test`. -->
+Restart the server and test it with [http://localhost:9000/music/baroque](http://localhost:9000/music/baroque).
 
 ## Nodemon
 
-We need to restart the server whenever we make a change to app.js. Let’s streamline it by using nodemon.
+We need to restart the server whenever we make a change to `index.js`. Let’s streamline it by installing the nodemon NPM package.
 
-`$ npm install -g nodemon`
+`$ npm i -S nodemon`
 
-To use nodemon we simply call it (instead of node) in the terminal with the name of our file:
+To use nodemon we simply call it (instead of node) in the terminal with the name of our file. Edit the start script in `package.json`:
 
-`nodemon app.js`
+```js
+"scripts": {
+  "start": "nodemon index.js"
+},
+```
 
 We no longer need to restart our server after making changes. Nodemon will watch for changes and take care of that for us.
 
-## Test Nodemon
-
-Add this after the last route:
+Add a third route and restart:
 
 ```js
-app.get('*', function(req, res) {
-  res.send(`
-    <h1>Page not found</h1>
-    `);
-});
+app.get('/reverse/:name', (req, res) => {
+  const reverse = [...req.params.name].reverse().join('');
+  res.send(reverse)
+})
 ```
 
-Upon save nodemon should restart the server. Test a bad route.
+
+
+
+
+```js
+const express = require('express');
+const app = express();
+const port = 9000;
+
+const fs = require('fs')
+// const _ = require('lodash')
+
+const articles = [];
+
+var content = fs.readFile('./json/travel.json', { encoding: 'utf8' }, function (err, data) {
+  if (err) throw err
+  JSON.parse(data).forEach(function (article) {
+    articles.push(article.title);
+  })
+})
+
+// our first route
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+
+// our second route
+app.get('/travel', function (req, res) {
+  var buffer = ''
+  articles.forEach(function (article) {
+    buffer += article + '<br>'
+  })
+  res.send(buffer);
+});
+
+app.listen(port, function() {
+  console.log(`Listening on port ${port}!`);
+});
+
+```
+
+
+
+
+
+```js
+const express = require('express');
+const app = express();
+const port = 9000;
+
+const fs = require('fs');
+
+const articles = [];
+
+var content = fs.readFile('./json/travel.json', { encoding: 'utf8' }, function (err, data) {
+  if (err) throw err
+  JSON.parse(data).forEach(function (article) {
+    articles.push(article.title);
+  })
+})
+
+// our first route
+app.get('/', function (req, res) {
+  var buffer = ''
+  articles.forEach(function (article) {
+    buffer += `<a href="/${article}">${article}</a> <br>`
+  })
+  res.send(buffer);
+});
+
+app.get(/Oslo.*/, function (req, res){
+  console.log('OSLO')
+  next()
+})
+
+// our second route
+app.get('/:article', function (req, res) {
+  const article = req.params.article
+  res.send(article)
+});
+
+app.listen(port, function() {
+  console.log(`Listening on port ${port}!`);
+});
+
+```
+
+
+
+
+
+```js
+const express = require('express');
+const app = express();
+const port = 9000;
+
+const fs = require('fs');
+
+const articles = [];
+
+var content = fs.readFile('./json/travel.json', { encoding: 'utf8' }, function (err, data) {
+  if (err) throw err
+  JSON.parse(data).forEach(function (article) {
+    articles.push(article.title);
+  })
+})
+
+// our first route
+app.get('/', function (req, res) {
+  var buffer = ''
+  articles.forEach(function (article) {
+    buffer += `<a href="/${article}">${article}</a> <br>`
+  })
+  res.send(buffer);
+});
+
+app.get(/Oslo.*/, function (req, res, next){
+  console.log('OSLO')
+  next()
+})
+
+// our second route
+app.get('/:article', function (req, res) {
+  const article = req.params.article
+  res.send(article)
+});
+
+app.listen(port, function() {
+  console.log(`Listening on port ${port}!`);
+});
+
+```
+
+
 
 ## Express Middleware
 
@@ -555,7 +293,7 @@ Upon save nodemon should restart the server. Test a bad route.
 
 DEMO: We will eventually be using [static](https://expressjs.com/en/starter/static-files.html) middleware (the only middleware _built in_ to Express) to serve files in our exercise.
 
-Add to app.js (above the app.get... line):
+Add to `index.js` (above the app.get... line):
 
 ```js
 app.use(express.static('app'));
@@ -591,7 +329,7 @@ app.get('/', (req, res) => {
 });
 ```
 
-(`__dirname` is a global variable for the directory that contains the app.js.)
+(`__dirname` is a global variable for the directory that contains index.js.)
 
 Create index.html in the top level:
 
@@ -609,6 +347,41 @@ Create index.html in the top level:
 ```
 
 You should be able to see the HTML file in the browser at the specified port number.
+
+## Proxy browser-sync
+
+Works on port 300 (the browser-sync port)
+
+```js
+{
+  "name": "session-3",
+  "version": "1.0.0",
+  "description": "<!-- and an Introduction to GIT -->",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files 'app'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/front-end-intermediate/session-3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/front-end-intermediate/session-3/issues"
+  },
+  "homepage": "https://github.com/front-end-intermediate/session-3#readme",
+  "dependencies": {
+    "browser-sync": "^2.26.3",
+    "express": "^4.16.4",
+    "nodemon": "^1.18.5"
+  }
+}
+```
+
+
+
 
 ## CRUD - CREATE
 
@@ -645,7 +418,7 @@ The action attribute tells the browser where to navigate to in our Express app.
 
 The method attribute tells the browser what to request to send. In this case, it’s a POST request.
 
-On our server, we can handle this POST request with a post method that Express provides. It takes the same arguments as the GET method:
+On our server, we can handle this POST request with the post method that Express provides. It takes the same arguments as the GET method:
 
 ```js
 app.post('/entries', (req, res) => {
@@ -659,7 +432,7 @@ Refresh your browser then click the form button. You should see 'Hello' in your 
 
 Express doesn’t handle reading data from the `<form>` element on it’s own. We have to add a middleware package called body-parser to gain this functionality.
 
-`$ npm install body-parser --save`
+`$ npm i body-parser --save`
 
 Make the following changes to app.js:
 
@@ -713,9 +486,9 @@ Create a free account with MongoLab. Once you’re done, create a new MongoDB da
 
 Once you’re done creating the deployment, click into it and create a database user and database password.
 
-![user](notes/mlab-user.png)
+![user](other/mlab-user.png)
 
-![user](notes/mlab-user2.jpg)
+![user](other/mlab-user2.jpg)
 
 Remember these because you’re going to use it to connect the database you’ve just created.
 
@@ -739,7 +512,11 @@ MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', 
 });
 ```
 
-Start the server using `nodemon app.js` and check for any errors.
+Start the server and check for any errors.
+
+```js
+MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', { useNewUrlParser: true }, (err, database) => {
+```
 
 Now, let’s create a collection - a named location to store data - to store content for our application.
 
@@ -1037,20 +814,3 @@ MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', 
 });
 ```
 
-<!-- ### Server Accounts
-
-Username is the first seven letters of your last name + first letter of first name
-
-Hostname is oit2.scps.nyu.edu
-
-Password is first initial, last initial, 123890
-
-e.g. devereld // dd123890
-
-Test to see if your account is active by entering this URL into a new browser tab (use your username after the tilde):
-
-`http://oit2.scps.nyu.edu/~******`
-
-Ensure you are using sFTP (port 22).
-
-Suggested clients: Cyberduck, FileZilla -->
