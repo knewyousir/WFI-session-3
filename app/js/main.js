@@ -1,62 +1,108 @@
-const nav = document.getElementById('main');
-const navbar = nav.querySelector('.navitems');
-const siteWrap = document.querySelector('.site-wrap');
+// your scripts go here
 
-let topOfNav = nav.offsetTop;
-
-function fixNav() {
-  if(window.scrollY >= topOfNav) {
-    document.body.style.paddingTop = nav.offsetHeight + 'px';
-    document.body.classList.add('fixed-nav');
-  } else {
-    document.body.classList.remove('fixed-nav');
-    document.body.style.paddingTop = 0;
+const navItems = [
+  {
+    label: 'LOGO',
+    link: '#'
+  },
+  {
+    label: 'Travel',
+    link: '#travel'
+  },
+  {
+    label: 'Fashion',
+    link: '#fashion'
+  },
+  {
+    label: 'Food',
+    link: '#food'
   }
-}
+];
 
-fetchData(null, function (content) {
-  const markup =
-    `<ul>
-    ${content.map(
-      listItem => `<li><a href="${listItem.link}">${listItem.label}</a></li>`
-    ).join('')}
-    </ul>`;
-  nav.innerHTML = markup;
-  // const logo = document.querySelector('#main ul li');
-  // logo.classList.add('logo');
-  // logo.firstChild.innerHTML = '<img src="img/logo.svg" />';
+const nav = document.getElementById('main');
+
+const markup = `
+<ul>
+${navItems.map( 
+  navItem => `<li><a href="${navItem.link}">${navItem.label}</a></li>` ).join('')}
+  </ul>
+`;
   
-})
-
-function navigate() {
-  let newloc = window.location.hash;
-  fetchData(newloc, function (content) {
-    let newContent = content.filter( contentItem => contentItem.link == newloc );
-    siteWrap.innerHTML = `
-    <h2>${newContent[0].header}</h2>
-    ${newContent[0].image}
-    ${newContent[0].content}
-    `;
-  })
-}
-
-function fetchData(hash, callback) {
-  var xhr = new XMLHttpRequest();
-
-  xhr.onload = function () {
-    callback(JSON.parse(xhr.response));
+  nav.innerHTML = markup;
+  
+  let topOfNav = nav.offsetTop;
+  window.addEventListener('scroll', fixNav);
+  
+  function fixNav() {
+    if(window.scrollY >= topOfNav) {
+      document.body.style.paddingTop = nav.offsetHeight + 'px';
+      document.body.classList.add('fixed-nav');
+    } else {
+      document.body.classList.remove('fixed-nav');
+      document.body.style.paddingTop = 0;
+    }
+  }
+  
+  const logo = nav.querySelector('#main ul li');
+  logo.classList.add('logo');
+  logo.innerHTML = '<a href="#"><img src="img/logo.svg" /></a>';
+  
+  var elem = document.querySelector('.site-wrap');
+  const nytapi = 'd7d88f32a04d4c6aab4e46735441d0ee';
+  const limit = 10;
+  var categories = ['food', 'fashion', 'travel'];
+  var log = console.log;
+  
+  function requestStories(section) {
+    var url = 'https://api.nytimes.com/svc/topstories/v2/' + section + '.json?api-key=' + nytapi;
+    var request = new XMLHttpRequest();
+    // Setup our listener to process request state changes
+    request.onreadystatechange = function () {
+      // Only run if the request is complete
+      if (request.readyState !== 4) return;
+      // Process the response
+      if (request.status >= 200 && request.status < 300) {
+        // If successful
+        renderStories(request, section); // NEW
+      }
+    };
+    request.open('GET', url, true);
+    request.send();
+  }
+  
+  function renderStories(stories, title) {
+    
+    var sectionHead = document.createElement('div');
+    sectionHead.id = title;
+    sectionHead.innerHTML = `<h3 class="section-head">${title}</h3>`;
+    elem.prepend(sectionHead)    
+    
+    stories = JSON.parse(stories.responseText).results.slice(0, limit);
+    log(stories)
+    stories.forEach(function (story) {
+      var storyEl = document.createElement('div');
+      storyEl.className = 'entry';
+      storyEl.innerHTML = `
+      <img src="${story.multimedia[0].url}" />
+      <div>
+      <h3><a target="_blank" href="${story.short_url}">${story.title}</a></h3>
+      <p>${sanitizeHTML(story.abstract)}</p>
+      </div>
+      `;
+      sectionHead.append(storyEl); 
+    });
+  }
+  
+  function getArticles() {
+    categories.forEach(function(category, index){
+      requestStories(category)
+    })
+  }
+  
+  var sanitizeHTML = function (str) {
+    var temp = document.createElement('div');
+    temp.textContent = str;
+    return temp.innerHTML;
   };
   
-  xhr.open('GET', 'http://localhost:3004/content', true);
-  xhr.send();
-}
-
-
-if (!location.hash) {
-  location.hash = '#watchlist';
-}
-
-navigate();
-
-window.addEventListener('scroll', fixNav);
-window.addEventListener('hashchange', navigate);
+  getArticles();
