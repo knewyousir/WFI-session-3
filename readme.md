@@ -13,8 +13,10 @@ As an implementation of a JS engine outside the browser, Node can run JS on the 
 
 ```sh
 cd other
-node script.js
+node script.js 
 ```
+
+`script.js`:
 
 ```js
 var addItems = function (num1, num2) {
@@ -52,11 +54,16 @@ npm init -y
 npm i -S express
 ```
 
-[Express](https://expressjs.com/en/api.html#req) is a server side framework for building web applications on Node.js. It simplifies the server creation process and allows you to use JavaScript as your server-side language.
+(`-S` is the shortcut for `--save`.)
 
-Common web-development tasks are not directly supported by Node. If you want to add specific handling for different HTTP verbs (e.g. GET, POST, DELETE, etc.), separately handle requests at different URL paths ("routes"), serve static files, or use templates to dynamically create the response, you will need to write the code yourself or use Express.
+[Express](https://expressjs.com/) is a server side framework for building web applications on Node.js. It simplifies the server creation process and uses JavaScript as the server-side language.
 
-Create `index.js` in the root folder of our project.
+Common web-development tasks are not directly supported by Node. Express allows you to add specific handling for different HTTP verbs (e.g. GET, POST, DELETE, etc.), separately handle requests at different URL paths ("routes"), serve static files, and use templates to dynamically create the response.
+
+
+## Exercise
+
+The default entry point in package.json is `index.js` so, following that lead, create `index.js` in the root folder of our project:
 
 ```js
 const express = require('express');
@@ -72,13 +79,11 @@ app.listen(port, function() {
 });
 ```
 
-Run with `$ node index.js`.
+Run in the terminal with `$ node index.js` and open the browser to `localhost:9000`.
 
-CommonJS module using the keywords require and exports.
+`require()` uses the CommonJS modular JS system to access JS applications in the `node_modules` folder via the keywords `require` and `exports`.
 
-Note that `console.log` is using the terminal, _not_ the browser's console. 
-
-Also note the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb.
+Note that `console.log` is using the terminal, _not_ the browser's console and the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb.
 
 Set up an NPM start command in package.json:
 
@@ -88,9 +93,7 @@ Set up an NPM start command in package.json:
 },
 ```
 
-Add a second route to `index.js`. 
-
-You will need to restart the server in order for this to run:
+Add a second route to `index.js`:
 
 ```js
 const express = require('express');
@@ -115,11 +118,14 @@ app.listen(port, function() {
 });
 ```
 
+You will need to restart the server in order for this to run.
+
 Visit [http://localhost:9000/music](http://localhost:9000/music)
 
 Edit the second route to include a variable and restart the server:
 
 ```js
+// our second route
 app.get('/music/:type', function(req, res) {
   let type = req.params.type;
     res.send(`
@@ -135,7 +141,9 @@ Restart the server and test it [http://localhost:9000/music/baroque](http://loca
 
 We need to restart the server whenever we make a change to `index.js`. Let’s streamline it by installing the nodemon NPM package.
 
-`$ npm i -S nodemon`
+`$ npm i -D nodemon`
+
+(`-D` is the shortcut for `--save-dev`.)
 
 To use nodemon we simply call it (instead of node) in the terminal with the name of our file. Edit the start script in `package.json`:
 
@@ -145,11 +153,14 @@ To use nodemon we simply call it (instead of node) in the terminal with the name
 },
 ```
 
-Nodemon will watch for changes and restart the server.
+Start the server with `npm start`.
+
+Nodemon will watch for changes to `index.js` and restart the server.
 
 Edit the second route and reload:
 
 ```js
+// our second route
 app.get('/music/:type', function(req, res) {
   const reverse = [...req.params.type].reverse().join(''); // NEW
   let type = reverse;
@@ -162,11 +173,13 @@ app.get('/music/:type', function(req, res) {
 
 ### Node File System
 
-No NPM install required.
+Node includes a number of methods for working with local files - no NPM install required.
 
-File system require `const fs = require('fs')`
+Require the ile system module at the top  of `index.js`: 
 
-Add
+`const fs = require('fs');`
+
+Use it to read a file in today's project:
 
 ```js
 const log = console.log;
@@ -181,6 +194,24 @@ var content = fs.readFile('./other/json/travel.json', { encoding: 'utf8' }, func
 })
 ```
 
+Note the output in the terminal.
+
+We could use this to construct an array of objects:
+
+```js
+var content = fs.readFile('./other/json/travel.json', { encoding: 'utf8' }, function (err, data) {
+  if (err) throw err
+  JSON.parse(data).forEach(function (article) {
+    var story = {}
+    story.title = article.title;
+    story.abstract = article.abstract;
+    story.image = Math.floor(Math.random() * 3 +1)
+    articles.push(story);
+  })
+  log(articles)
+})
+```
+
 Edit the first route:
 
 ```js
@@ -188,7 +219,7 @@ Edit the first route:
 app.get('/', function (req, res) {
   var buffer = ''
   articles.forEach(function (article) {
-    buffer += `<a href="/${article}">${article}</a> <br>`
+    buffer += `<a href="/${article.title}">${article.title}</a> <br>`
   })
   res.send(buffer);
 });
@@ -201,14 +232,16 @@ Create a third route:
 // our third route
 app.get('/:article', function (req, res) {
   const article = req.params.article
-  var buffer = ''
+  var buffer = '';
   buffer += article + '<br>'
   buffer += '<a href="/">Back</a>'
   res.send(buffer);
 });
 ```
 
-Routes - use regular expressions:
+Here we store the parameter in a variable `const article = req.params.article` and use it to image the page.
+
+Routes can use regular expressions. Add this after the first route:
 
 ```js
 app.get(/Oslo.*/, function (req, res){
@@ -217,9 +250,26 @@ app.get(/Oslo.*/, function (req, res){
 })
 ```
 
-Route ordering is important. When `res.send` runs, no other routes will register. 
+Note the error. In order to go to the next route we need to pass that into the function:
 
-Insert the code above before the second route and test.
+```js
+app.get(/Oslo.*/, function (req, res, next){
+  console.log('OSLO')
+  next()
+})
+```
+
+Note - if you are checking for errors you need to define that variable too:
+
+```js
+app.get(/Oslo.*/, function (err, req, res, next){
+  if (err) return console.log(err);
+  console.log('OSLO')
+  next()
+})
+```
+
+Route ordering is important. When `res.send` runs, no other routes will run - the process is finished. 
 
 Passing info via the response object:
 
@@ -248,11 +298,13 @@ app.get('/:article', function (req, res) {
 });
 ```
 
+Note that the other links are sending code to the UI. Probably best to select a better variable name (e.g.`loc`)!
+
 ## Express Middleware
 
 [Middleware](http://expressjs.com/en/resources/middleware.html) is used in Express apps to simplify common web development tasks like working with cookies, sessions, user authentication, accessing and sending JSON, logging, etc.
 
-DEMO: We will eventually be using [static](https://expressjs.com/en/starter/static-files.html) middleware (the only middleware _built in_ to Express) to serve files in our exercise.
+We will be using [static](https://expressjs.com/en/starter/static-files.html) middleware to serve files in our exercise.
 
 Add to `index.js` (above the app.get... line):
 
@@ -262,26 +314,24 @@ app.use(express.static('app'));
 
 You should be able to see the site in the app folder from session 2.
 
-<!-- Comment out `app.use(express.static('app'))` - we'll make use of this later. -->
-
 ## CRUD
 
 CRUD is an acronym for Create, Read, Update and Delete. It is a set of operations we get servers to execute (using the http verbs POST, GET, PUT and DELETE respectively). This is what [each operation does](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods):
 
-* Read (GET) - Retrieve something, requests a representation of the specified resource
-* Create (POST) - Make something, a message for a bulletin board, newsgroup, mailing list, or comment thread; a block of data that is the result of submitting a web form to a data-handling process
-* Update (PUT) - Alter an existing item, if the URL refers to an already existing resource, it is modified; if not, then the server can create the resource with that URL
-* Delete (DELETE)- deletes the specified resource.
+* Read (GET): Retrieve something, requests a representation of the specified resource
+* Create (POST): Make something, a message for a bulletin board, newsgroup, mailing list, or comment thread; a block of data that is the result of submitting a web form to a data-handling process
+* Update (PUT): Alter an existing item, if the URL refers to an already existing resource, it is modified; if not, then the server can create the resource with that URL
+* Delete (DELETE): deletes the specified resource.
 
 As we have seen, in Express, we handle a GET request with the get method:
 
 `app.get('/', (req, res) => res.send('Hello World!'))`
 
-The first argument, `/,` is the path of the GET request (anything that comes after your domain name). For localhost:3000, the browser is actually looking for localhost:3000/. The path argument in this case is /.
+The first argument, `/,` is the path of the GET request (anything that comes after your domain name). For localhost:3000, the browser is actually looking for localhost:3000/ when the path argument is `/`.
 
 The second argument, e.g. `(req, res) => res.send('Hello World!')`, is a callback function that tells the server what to do when the path is matched. It takes two arguments, a request object and a response object (req, res).
 
-Use `res.sendFile`, method that’s provided by the res object, to serve an index.html page back to the browser.
+Use `res.sendFile`, a method that’s provided by the res object, to serve an index.html page back to the browser.
 
 Edit index.html in the app folder:
 
@@ -311,13 +361,17 @@ app.get('/', (req, res) => {
 
 (`__dirname` is a global variable for the directory that contains index.js.)
 
-You should be able to see the HTML file in the browser at the specified port number.
+You should be able to see the HTML file in the browser at the specified port number. 
+
+Try temporarily commenting out the static middleware. The page still shows, but the other assets (CSS and images) are not available.
 
 ## Proxy browser-sync
 
-`npm i browser-sync --save-dev`
+Let's set up browser refreshing with browser-sync.
 
-Works on port 3000 (the browser-sync port)
+`npm i -D browser-sync`
+
+Edit package.json:
 
 ```js
 "scripts": {
@@ -325,11 +379,13 @@ Works on port 3000 (the browser-sync port)
 },
 ```
 
+This works on port 3000 (the browser-sync port) not 9000. _Be sure to change the browser_ to `localhost:3000`.
+
 ## CRUD - CREATE
 
 The CREATE operation is performed only by the browser if a POST request is sent to the server. This POST request can triggered either with JavaScript or through a `<form>` element.
 
-Add the following to index.html
+Add the following to `index.html`:
 
 ```html
 <form action="/entries" method="POST">
@@ -342,13 +398,15 @@ Add the following to index.html
 
 Our form requires:
 
-1. an action attribute
-1. a method attribute
+1. an action attribute: `/entries`
+1. a method attribute: `POST`
 1. and name attributes on all `<input>` elements within the form
 
 The action attribute tells the browser where to navigate to in our Express app.
 
 The method attribute tells the browser what to request to send. In this case, it’s a POST request.
+
+Add some CSS for the form.
 
 ```html
 <style>
@@ -367,7 +425,9 @@ The method attribute tells the browser what to request to send. In this case, it
 </style>
 ```
 
-On our server, we can handle this POST request with the post method that Express provides. It takes the same arguments as the GET method:
+On our server, we will handle request with the post method that Express provides. It takes the same arguments as the GET method.
+
+`index.js`:
 
 ```js
 app.post('/entries', (req, res) => {
@@ -380,28 +440,32 @@ Click the form button. You should see 'Hello' in the terminal.
 
 Express doesn’t handle reading data from the `<form>` element on it’s own. We have to add a middleware package called body-parser to gain this functionality.
 
-`$ npm i body-parser --save`
+`$ npm i -S body-parser`
 
-Make the following additions to `app.js`:
+Make the following additions to `index.js`:
 
 ```js
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const port = 9000;
-app.use(bodyParser.urlencoded({ extended: true }));
+const bodyParser = require('body-parser'); // NEW
 ```
 
-The urlencoded method within body-parser tells body-parser to extract data from the `<form>` element and add them to the body property in the request object.
+and
 
-Now, when you test your form, you should be able to see everything in the form field within the req.body object. Try doing a console.log:
+```js
+app.use(bodyParser.urlencoded({ extended: true })); // NEW
+```
+
+The urlencoded method of body-parser tells body-parser to extract data from the `<form>` element and add them to the body property in the request object.
+
+Now, when you test your form, you should be able to see everything in the form field within the req.body object. Try logging the request body:
 
 ```js
 app.post('/entries', (req, res) => {
-  console.log(req.body);
-  res.redirect('/');
+  console.log(req.body); // NEW
+  res.redirect('/'); // there is no path to entries
 });
 ```
+
+Note the use of redirect here.
 
 The object `{ label: '', header: '', content: '' }` is packaged by the body parser and sent to the server as part of the request body.
 
@@ -411,11 +475,13 @@ Express apps can use any database supported by Node including PostgreSQL, MySQL,
 
 We first have to install the [driver for MongoDB](http://mongodb.github.io/node-mongodb-native/) using npm.
 
+_Not_ this one:
+
 `$ npm install mongodb@2.2.5 --save`
 
-or
+We'll use the latest:
 
-`$ npm install mongodb --save`
+`$ npm i -S mongodb`
 
 Note: this is not the MongoDB database, just the driver needed to work with it. 
 
@@ -439,7 +505,7 @@ We need to get the correct link to our database.
 
 We'll use a service - [MongoLab](https://mlab.com).
 
-Create a free account with MongoLab. Once you’re done, create a new MongoDB database and set the plan to sandbox (free) and call it `bcl`.
+Create a free account with MongoLab. Once you’re done, create a new MongoDB deployment (I used Amazon), set the plan to sandbox (free) and call it `bcl`.
 
 Once you’re done creating the deployment, click into it and create a database user and database password.
 
@@ -485,11 +551,11 @@ MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', 
 });
 ```
 
-Check for any errors.
+Comment out any logging and check for any errors.
 
 Now, let’s create a collection - a named location to store data - to store content for our application.
 
-We can create the collection by using the string `entries` while calling MongoDB’s `db.collection()` method. Since a collection is created if it doesn't already exist we can save our first entry into the database while using the `save` method.
+We can create the collection by using the string `entries` while calling MongoDB’s `db.collection()` method. Since a collection is created if it doesn't already exist we can save our first entry into the database when saving it.
 
 Also, once we’re done saving, we have to redirect the user somewhere (or they’ll be stuck waiting for our server to go to `/entries` which doesn't exist except as a post route).
 
@@ -505,7 +571,7 @@ app.post('/entries', (req, res) => {
 });
 ```
 
-If you see another deprication error try:
+If you see another error try using `insertOne` instead of `save`:
 
 ```js
 app.post('/entries', (req, res) => {
@@ -529,6 +595,23 @@ MongoClient.connect(
   app.listen(port, () => {
     console.log(`Listening on port ${port}!`);
   });
+});
+```
+
+In version 2.x of the MongoDB native NodeJS driver you would get the database object as an argument to the connect callback:
+
+```js
+mongo.connect(url, (err, db) => {
+  // Database returned
+});
+```
+
+According to the changelog for 3.0 you now get a client object containing the database object instead:
+
+```js
+mongo.connect(url, (err, client) => {
+  // Client returned
+  var db = client.db('mytestingdb');
 });
 ```
 
@@ -559,6 +642,7 @@ The `toArray` method takes in a callback function that allows us to do stuff wit
 
 ```js
 app.get('/', (req, res) => {
+  console.log('made it')
   db
     .collection('entries')
     .find()
@@ -617,6 +701,14 @@ app.get('/', (req, res) => {
 });
 ```
 
+Note: browser-sync is not tracking this directory:
+
+```js  
+"scripts": {
+   "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files ['app', 'views'] "
+ },
+  ```
+
 Since we have already set the views and view engine we can omit the file extension:
 
 ```js
@@ -637,7 +729,7 @@ Add the following above the form:
 <% } %>
 ```
 
-Now, refresh your browser and you should be able to see all entries.
+Now, refresh your browser and you should be able to see titles for all entries.
 
 <!-- ```js
 app.get('/:entry', (req, res) => {
@@ -885,19 +977,7 @@ app.get('*.json', (req, res) => {
 })
 ```
 
-```js
-var content = fs.readFile('./other/json/travel.json', { encoding: 'utf8' }, function (err, data) {
-  if (err) throw err
-  JSON.parse(data).forEach(function (article) {
-    var story = {}
-    story.title = article.title;
-    story.abstract = article.abstract;
-    story.image = Math.floor(Math.random() * 3 +1)
-    articles.push(story);
-  })
-  log(articles)
-})
-```
+
 
 
 
