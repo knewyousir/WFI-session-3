@@ -770,7 +770,7 @@ app.set('view engine', 'pug')
 
 Some templating laguages do not have native Express support. [Handlebars](https://handlebarsjs.com/) is an example.
 
-`npm i handlebars consolidate`
+`npm i -S handlebars consolidate`
 
 Consolidate provides shims for templating languages not supported by Express natively.
 
@@ -782,7 +782,7 @@ app.set('views', './views')
 app.set('view engine', 'hbs')
 ```
 
-Add the following into the existing ejs file and save as `index.hbs`:
+Insert the following into the existing ejs file (overwriting the ejs code) and save as `index.hbs`:
 
 ```html
 <ul>
@@ -809,7 +809,6 @@ Make sure `app.use(express.static('app'))` is enabled.
   <div class="entry">
   <img src="/img/{{entry.multimedia}}.jpg" />
   <a href="/{{entry.title}}">{{entry.title}}</a>
-  <p>{{entry.abstract}}</p>
   </div>
   {{/each}}
 
@@ -842,7 +841,9 @@ In `index.hbs`:
 
 ## A Story Page
 
-Edit `index.ejs` to use the unique id in the db as a link:
+When you create an entry in MongoDB it is assigned a unique id with [all manner](https://docs.mongodb.com/manual/reference/method/ObjectId/) of useful functionality.
+
+Edit `index.hbs` to use the unique id in the db as a link:
 
 ```js
 {{#each entries as |entry|}}
@@ -854,7 +855,7 @@ Edit `index.ejs` to use the unique id in the db as a link:
 {{/each}}
 ```
 
-Save a new page to views as `story.hbs` - leave out the form:
+Save a `index.hbs` to a new page in `views` as `story.hbs` - remove the form and the forEach and add:
 
 ```html
 <div class="entry">
@@ -864,7 +865,7 @@ Save a new page to views as `story.hbs` - leave out the form:
 </div>
 ```
 
-Get only the first entry
+Add the following to `index.js` belwo the first route to get only the first entry:
 
 ```js
 app.get('/:id', (req, res) => {
@@ -878,7 +879,7 @@ app.get('/:id', (req, res) => {
 })
 ```
 
-Here we are using `res.send` so the template is not used.
+Note: here we are using `res.send` so the `hbs` template is not used.
 
 Send it to the new template:
 
