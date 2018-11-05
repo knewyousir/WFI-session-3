@@ -9,7 +9,9 @@ Today we continue to work with NPM and start looking at ExpressJS and server sid
 
 ## NODE
 
-As an implementation of a JS engine outside the browser, Node can run JS on the server:
+As an implementation of a JS engine outside the browser, Node can run JS on the server.
+
+Demo:
 
 ```sh
 cd other
@@ -28,7 +30,7 @@ addItems(1,2)
 
 A simple node.js [server](https://nodejs.org/en/about/).
 
-DEMO: Save this into `script.js` in the `other` folder and run it using `node script.js`
+Demo: Save this into `script.js` in the `other` folder and run it using `node script.js`
 
 ```js
 const http = require('http');
@@ -49,6 +51,12 @@ server.listen(port, hostname, () => {
 
 ## Express
 
+[Express](https://expressjs.com/) is a server side framework for building web applications on Node.js. It simplifies the server creation process and uses JavaScript as the server-side language.
+
+Common web-development tasks are not directly supported by Node. Express allows you to add specific handling for different HTTP verbs (e.g. GET, POST, DELETE, etc.), separately handle requests at different URL paths ("routes"), serve static files, and use templates to dynamically create the response.
+
+Install ExpressJS:
+
 ```sh
 npm init -y
 npm i -S express
@@ -56,12 +64,7 @@ npm i -S express
 
 (`-S` is the shortcut for `--save`.)
 
-[Express](https://expressjs.com/) is a server side framework for building web applications on Node.js. It simplifies the server creation process and uses JavaScript as the server-side language.
-
-Common web-development tasks are not directly supported by Node. Express allows you to add specific handling for different HTTP verbs (e.g. GET, POST, DELETE, etc.), separately handle requests at different URL paths ("routes"), serve static files, and use templates to dynamically create the response.
-
-
-## Exercise
+## Developing Our Server
 
 The default entry point in `package.json` is `index.js` so, following that lead, let's create `index.js` in the root folder of our project.
 
@@ -72,6 +75,7 @@ const express = require('express');
 const app = express();
 const port = 9000;
 
+// our first route
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
@@ -83,9 +87,11 @@ app.listen(port, function() {
 
 Run in the terminal with `node index.js` and open Chrome to `localhost:9000`.
 
-`require()` uses the CommonJS modular JS system to access JS applications in the `node_modules` folder via the keywords `require` and `exports`.
+`require()` uses the CommonJS modular system to access applications in the `node_modules` folder via the keywords `require` and `exports`.
 
-Note that `console.log` is using the terminal, _not_ the browser's console and the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb.
+Note that `console.log` is using the terminal, _not_ the browser's console. [get('/')](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the first route.
+
+The system uses a callback function which we pass the request and response object into. 
 
 Set up an NPM start command in `package.json`:
 
@@ -95,7 +101,7 @@ Set up an NPM start command in `package.json`:
 },
 ```
 
-Kill your server with `ctr: c` and restart it with `npm start`.
+Kill any process in the terminal with `ctr: c` and restart it with `npm start`.
 
 Add a second route to `index.js`:
 
@@ -126,7 +132,7 @@ You will need to restart the server in order for this to run.
 
 Visit [http://localhost:9000/music](http://localhost:9000/music)
 
-Edit the second route to include a variable and restart the server:
+Edit the second route to include a request parameter variable and restart the server:
 
 ```js
 // our second route
@@ -139,7 +145,7 @@ app.get('/music/:type', function(req, res) {
 });
 ```
 
-Restart the server and test it [http://localhost:9000/music/baroque](http://localhost:9000/music/baroque).
+Kill any process in the terminal with `ctr: c` restart the server and test it at [http://localhost:9000/music/baroque](http://localhost:9000/music/baroque)
 
 ## Nodemon
 
@@ -157,7 +163,7 @@ To use nodemon we simply call it (instead of node) in the terminal with the name
 },
 ```
 
-Start the server with `npm start`.
+Kill any process in the terminal with `ctr: c`Start the server with `npm start`.
 
 Nodemon will watch for changes to `index.js` and restart the server.
 
@@ -177,9 +183,9 @@ app.get('/music/:type', function(req, res) {
 
 ### Node File System
 
-Node includes a number of methods for working with local files - no NPM install required.
+Node includes a number of native (no npm install required) methods for working with local files.
 
-Require the ile system module at the top  of `index.js`: 
+Require the file system module on line three of `index.js`: 
 
 `const fs = require('fs');`
 
@@ -229,7 +235,6 @@ app.get('/', function (req, res) {
 });
 ```
 
-
 Create a third route:
 
 ```js
@@ -254,7 +259,7 @@ app.get(/Oslo.*/, function (req, res){
 })
 ```
 
-Note the error. In order to go to the next route we need to pass that into the function:
+Note the error. In order to go to the next route we need to pass `next` into the function:
 
 ```js
 app.get(/Oslo.*/, function (req, res, next){
@@ -275,7 +280,7 @@ app.get(/Oslo.*/, function (err, req, res, next){
 
 Route ordering is important. When `res.send` runs, no other routes will run - the process is finished. 
 
-Passing info via the response object:
+Pass info via the response object:
 
 ```js
 app.get(/Oslo.*/, function (req, res, next){
@@ -358,7 +363,7 @@ Create a views folder and save the below into it as `index.html`:
 
 ```js
 app.get('/', (req, res) => {
-  // console.log(__dirname)
+  console.log(__dirname)
   res.sendFile(__dirname + '/views/index.html');
 });
 ```
