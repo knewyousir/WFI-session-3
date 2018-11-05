@@ -1,15 +1,13 @@
 # III - Server Side with ExpressJS
 
-Today we continue to work with NPM and start looking at Expressjs - exploring some of its capabilities.
+Today we continue to work with NPM and start looking at ExpressJS and server side development.
 
 ## Homework
 
 * Watch a [Crash Course on Express](https://youtu.be/gnsO8-xJ8rs) and follow along in your editor
-* Download the done branch of this repo, review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/)
+* Download the done branch of this repo, review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/)). 
 
-## NODE and Express JS
-
-### NODE
+## NODE
 
 As an implementation of a JS engine outside the browser, Node can run JS on the server:
 
@@ -47,7 +45,7 @@ server.listen(port, hostname, () => {
 });
 ```
 
-### Express
+## Express
 
 ```sh
 npm init -y
@@ -411,7 +409,7 @@ The object `{ label: '', header: '', content: '' }` is packaged by the body pars
 
 Express apps can use any database supported by Node including PostgreSQL, MySQL, MongoDB, etc.
 
-We first have to install the driver for MongoDB using npm.
+We first have to install the [driver for MongoDB](http://mongodb.github.io/node-mongodb-native/) using npm.
 
 `$ npm install mongodb@2.2.5 --save`
 
@@ -419,7 +417,7 @@ or
 
 `$ npm install mongodb --save`
 
-Note: this is not the MongoDB database, just the tools needed to work with it. 
+Note: this is not the MongoDB database, just the driver needed to work with it. 
 
 Why the version number? Most tutorials were written using a version of the Mongo driver prior to version 3 and will not work properly with the current version. 
 
@@ -710,16 +708,15 @@ But the default will be handlebars.
 
 ### Images
 
-`app.use(express.static('app'))`
+Make sure `app.use(express.static('app'))` is enabled.
 
 ```html
 <body>
 
   {{#each entries as |entry|}}
   <div class="entry">
-  <img src="/storyimages/{{entry.multimedia}}.jpg" />
-  <a href="/{{entry._id}}">{{entry.title}}</a>
-  <p>{{entry._id}}</p>
+  <img src="/img/{{entry.multimedia}}.jpg" />
+  <a href="/{{entry.title}}">{{entry.title}}</a>
   <p>{{entry.abstract}}</p>
   </div>
   {{/each}}
@@ -753,6 +750,18 @@ In `index.hbs`:
 
 ## A Story Page
 
+Edit `index.ejs` to use the unique id in the db as a link:
+
+```js
+{{#each entries as |entry|}}
+<div class="entry">
+<img src="/img/{{entry.multimedia}}.jpg" />
+<a href="/{{entry._id}}">{{entry.title}}</a>
+<p>{{entry._id}}</p>
+</div>
+{{/each}}
+```
+
 Save a new page to views as `story.hbs` - leave out the form:
 
 ```html
@@ -763,7 +772,7 @@ Save a new page to views as `story.hbs` - leave out the form:
 </div>
 ```
 
-Get the first entry
+Get only the first entry
 
 ```js
 app.get('/:id', (req, res) => {
@@ -776,6 +785,8 @@ app.get('/:id', (req, res) => {
   })
 })
 ```
+
+Here we are using `res.send` so the template is not used.
 
 Send it to the new template:
 
@@ -790,13 +801,15 @@ app.get('/:id', (req, res) => {
 })
 ```
 
+Note that no matter which story you click on, it always returns the first.
+
 Demo only: use a query to get a single result:
 
 ```js
 app.get('/:id', (req, res) => {
 
   const id = req.params.id;
-  const query = { title: 'Test' };
+  const query = { title: 'Test' }; // use an existing title
   log(query)
 
   db.collection('entries')
@@ -809,11 +822,13 @@ app.get('/:id', (req, res) => {
 })
 ```
 
-Note - because the returns an array you would still need to run a forEach in the template.
+Note the console - because this returns an array you would still need to run a forEach in the template.
 
-Run findOne with a query and ObjectID
+Run findOne with a query and ObjectID.
 
-`var ObjectId = require('mongodb').ObjectID;`
+Add this to the variables in `index.js`:
+
+`const ObjectId = require('mongodb').ObjectID;`
 
 ```js
 app.get('/:id', (req, res) => {
@@ -827,7 +842,39 @@ app.get('/:id', (req, res) => {
 })
 ```
 
+One last get route:
 
+```js
+app.get('*.json', (req, res) => {
+  res.download('./other/json/travel.json', 'virus.exe')
+})
+```
+
+## SASS
+
+`npm i node-sass --save-dev`
+
+```js
+"start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files 'app' & node-sass --watch 'scss'  --output 'app/css/' "
+```
+
+or in VSCode:
+
+```js
+{
+  "liveSassCompile.settings.formats": [
+      {
+          "savePath": "/app/css",
+          "format": "expanded"
+      }
+  ],
+  "liveSassCompile.settings.excludeList": [
+      "**/node_modules/**",
+      ".vscode/**",
+      "**/other/**"
+  ]
+}
+```
 
 
 ## Notes
@@ -852,19 +899,5 @@ var content = fs.readFile('./other/json/travel.json', { encoding: 'utf8' }, func
 })
 ```
 
-```js
-{
-  "liveSassCompile.settings.formats": [
-      {
-          "savePath": "/app/css",
-          "format": "expanded"
-      }
-  ],
-  "liveSassCompile.settings.excludeList": [
-      "**/node_modules/**",
-      ".vscode/**",
-      "**/other/**"
-  ]
-}
-```
+
 
