@@ -5,7 +5,7 @@ Today we continue to work with NPM and start looking at ExpressJS and server sid
 ## Homework
 
 * Watch a [Crash Course on Express](https://youtu.be/gnsO8-xJ8rs) and follow along in your editor
-* Download the done branch of this repo, review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/)). 
+* Review the steps below, and get the communication between the form and _your own account_ on mLab working (see the [instructions for connecting](https://docs.mlab.com/connecting/)). 
 
 ## NODE
 
@@ -63,7 +63,9 @@ Common web-development tasks are not directly supported by Node. Express allows 
 
 ## Exercise
 
-The default entry point in package.json is `index.js` so, following that lead, create `index.js` in the root folder of our project:
+The default entry point in `package.json` is `index.js` so, following that lead, let's create `index.js` in the root folder of our project.
+
+`index.js`:
 
 ```js
 const express = require('express');
@@ -79,19 +81,21 @@ app.listen(port, function() {
 });
 ```
 
-Run in the terminal with `$ node index.js` and open the browser to `localhost:9000`.
+Run in the terminal with `node index.js` and open Chrome to `localhost:9000`.
 
 `require()` uses the CommonJS modular JS system to access JS applications in the `node_modules` folder via the keywords `require` and `exports`.
 
 Note that `console.log` is using the terminal, _not_ the browser's console and the [get](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) verb.
 
-Set up an NPM start command in package.json:
+Set up an NPM start command in `package.json`:
 
 ```js
 "scripts": {
   "start": "node index.js"
 },
 ```
+
+Kill your server with `ctr: c` and restart it with `npm start`.
 
 Add a second route to `index.js`:
 
@@ -281,7 +285,7 @@ app.get(/Oslo.*/, function (req, res, next){
 })
 ```
 
-Include it in the output:
+And include it in the output:
 
 ```js
 // our third route
@@ -306,13 +310,13 @@ Note that the other links are sending code to the UI. Probably best to select a 
 
 We will be using [static](https://expressjs.com/en/starter/static-files.html) middleware to serve files in our exercise.
 
-Add to `index.js` (above the app.get... line):
+Add to `index.js` (below the const variables near the top):
 
 ```js
 app.use(express.static('app'));
 ```
 
-You should be able to see the site in the app folder from session 2.
+Refresh the page and you should be able to see the site in the app folder from session 2.
 
 ## CRUD
 
@@ -333,7 +337,7 @@ The second argument, e.g. `(req, res) => res.send('Hello World!')`, is a callbac
 
 Use `res.sendFile`, a method that’s provided by the res object, to serve an index.html page back to the browser.
 
-Edit index.html in the app folder:
+Create a views folder and save the below into it as `index.html`:
 
 ```html
 <!DOCTYPE html>
@@ -355,7 +359,7 @@ Edit index.html in the app folder:
 ```js
 app.get('/', (req, res) => {
   // console.log(__dirname)
-  res.sendFile(__dirname + '/app/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 ```
 
@@ -363,7 +367,7 @@ app.get('/', (req, res) => {
 
 You should be able to see the HTML file in the browser at the specified port number. 
 
-Try temporarily commenting out the static middleware. The page still shows, but the other assets (CSS and images) are not available.
+Try temporarily commenting out the static middleware. The other assets (CSS and images) are not available.
 
 ## Proxy browser-sync
 
@@ -371,15 +375,15 @@ Let's set up browser refreshing with browser-sync.
 
 `npm i -D browser-sync`
 
-Edit package.json:
+Edit package.json and restart the server:
 
-```js
+```js  
 "scripts": {
-  "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files 'app'"
-},
-```
+   "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files ['app', 'views'] "
+ },
+  ```
 
-This works on port 3000 (the browser-sync port) not 9000. _Be sure to change the browser_ to `localhost:3000`.
+This works on port 3000 (the browser-sync port) not 9000. _Be sure to point the browser_ to `localhost:3000`.
 
 ## CRUD - CREATE
 
@@ -427,7 +431,7 @@ Add some CSS for the form.
 
 On our server, we will handle request with the post method that Express provides. It takes the same arguments as the GET method.
 
-`index.js`:
+NEW in `index.js`:
 
 ```js
 app.post('/entries', (req, res) => {
@@ -475,13 +479,9 @@ Express apps can use any database supported by Node including PostgreSQL, MySQL,
 
 We first have to install the [driver for MongoDB](http://mongodb.github.io/node-mongodb-native/) using npm.
 
-_Not_ this one:
+We'll use the latest package:
 
-`$ npm install mongodb@2.2.5 --save`
-
-We'll use the latest:
-
-`$ npm i -S mongodb`
+`npm i -S mongodb`
 
 Note: this is not the MongoDB database, just the driver needed to work with it. 
 
@@ -521,7 +521,7 @@ Finally, grab the MongoDB url and add it to your MongoClient.connect method. Mak
 
 We want to start our servers only when the database is connected so let’s move `app.listen` into the connect method. We’re also going to create a db variable to allow us to use the database when we handle requests from the browser.
 
-Make sure this has been added to you variable declarations:
+Make sure this has been added to your `requires` at the top in `index.js`:
 
 ```js
 const MongoClient = require('mongodb').MongoClient;
@@ -529,7 +529,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 Let's wrap our database connection around the `app.listen` method:
 
-```js
+<!-- ```js
 MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', (err, database) => {
   if (err) return console.log(err);
   db = database;
@@ -539,12 +539,13 @@ MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', 
 });
 ```
 
-Kill the deprecation notice with:
+Kill the deprecation notice with: -->
 
 ```js
-MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', { useNewUrlParser: true }, (err, database) => {
+MongoClient.connect(
+  'mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', { useNewUrlParser: true }, (err, client) => {
   if (err) return console.log(err);
-  db = database;
+  db = client.db('bcl');
   app.listen(port, () => {
     console.log(`Listening on port ${port}!`);
   });
@@ -561,7 +562,7 @@ Also, once we’re done saving, we have to redirect the user somewhere (or they�
 
 In this case, we’re going to redirect them back to `/`:
 
-```js
+<!-- ```js
 app.post('/entries', (req, res) => {
   db.collection('entries').save(req.body, (err, result) => {
     if (err) return console.log(err);
@@ -571,7 +572,7 @@ app.post('/entries', (req, res) => {
 });
 ```
 
-If you see another error try using `insertOne` instead of `save`:
+If you see another error try using `insertOne` instead of `save`: -->
 
 ```js
 app.post('/entries', (req, res) => {
@@ -583,7 +584,7 @@ app.post('/entries', (req, res) => {
 });
 ```
 
-Now enter something into the form, note the error.
+<!-- Now enter something into the form, note the error.
 
 Update the call to use the new `client` :
 
@@ -596,9 +597,9 @@ MongoClient.connect(
     console.log(`Listening on port ${port}!`);
   });
 });
-```
+``` -->
 
-In version 2.x of the MongoDB native NodeJS driver you would get the database object as an argument to the connect callback:
+<!-- In version 2.x of the MongoDB native NodeJS driver you would get the database object as an argument to the connect callback:
 
 ```js
 mongo.connect(url, (err, db) => {
@@ -613,7 +614,7 @@ mongo.connect(url, (err, client) => {
   // Client returned
   var db = client.db('mytestingdb');
 });
-```
+``` -->
 
 And you’ll be able to see an entry in your MongoDB collection.
 
@@ -624,13 +625,13 @@ We will do two things to show the entries stored in mLab to our users.
 1. Get the entries from MongoLab in our base route
 2. Use some form of dynamic html (a template engine) to display the entries
 
-We can get the entries from MongoLab by using the find method available in the collection method. No parameters in the find() method gives you the same result as SELECT * in MySQL.:
+<!-- We can get the entries from MongoLab by using the find method available in the collection method. No parameters in the find() method gives you the same result as SELECT * in MySQL.:
 
 ```js
 app.get('/', (req, res) => {
   const cursor = db.collection('entries').find();
   console.log(cursor);
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 ```
 
@@ -648,14 +649,12 @@ app.get('/', (req, res) => {
     .find()
     .toArray((results) => {
       console.log(results);
-      res.sendFile(__dirname + '/index.html');
+      res.sendFile(__dirname + '/views/index.html');
     });
 });
 ```
 
-Refresh the page and see an array of entries in the terminal.
-
-Let's generate HTML that displays all our entries.
+Let's generate HTML that displays all our entries. -->
 
 ## Template Engines
 
@@ -663,11 +662,11 @@ Let's generate HTML that displays all our entries.
 
 We can’t serve our index.html file and expect entries to magically appear because there’s no way to add dynamic content to a plain HTML file. What we can do instead, is to use template engines to help us out. Some popular template engines include jade/pug, Embedded JavaScript (EJS) and Handlebars.
 
-For today, we’re going to start with Embedded JavaScript as our template engine.
+## EJS Demo
 
 We can use EJS by first installing it, then setting the view engine in Express.
 
-`npm install ejs --save`
+`npm i -S ejs`
 
 and in `index.js`:
 
@@ -676,44 +675,9 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 ```
 
-Let’s first create an `index.ejs` file within a views folder so we can start populating data.
+Let’s create an `index.ejs` file within a views folder so we can start populating data.
 
-Make a `views` folder on the top level of our project and create `index.ejs` inside it.
-
-```sh
-mkdir views
-touch views/index.ejs
-```
-
-Copy the contents of `index.html` into `index.ejs` and refresh. 
-
-Finally, we have to render `index.ejs` when handling the GET request. Now that we have a dynamic asset we need to call `res.render` instead of `res.send`:
-
-```js
-app.get('/', (req, res) => {
-  db
-    .collection('entries')
-    .find()
-    .toArray((err, result) => {
-      if (err) return console.log(err);
-      res.render('index.ejs', { entries: result });
-    });
-});
-```
-
-Note: browser-sync is not tracking this directory:
-
-```js  
-"scripts": {
-   "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files ['app', 'views'] "
- },
-  ```
-
-Since we have already set the views and view engine we can omit the file extension:
-
-```js
-res.render('index', { entries: result });
-```
+Create `index.ejs` inside the `views` folder and copy the contents of `index.html` into it. 
 
 In EJS, you can write JavaScript within `<%` and `%>` tags and output JavaScript as strings using the `<%=` and `%>` tags.
 
@@ -729,6 +693,28 @@ Add the following above the form:
 <% } %>
 ```
 
+Finally, we have to render `index.ejs` when handling the GET request. Now that we have a dynamic asset we need to call `res.render` instead of `res.send`:
+
+```js
+app.get('/', (req, res) => {
+  db
+    .collection('entries')
+    .find()
+    .toArray((err, result) => {
+      if (err) return console.log(err);
+      res.render('index.ejs', { entries: result });
+    });
+});
+```
+
+The `toArray` method takes in a callback function that allows us to do stuff with entries we retrieved from MongoLab. Let’s try doing a `console.log()` for the results and see what we get:
+
+Since we have already set the views and view engine we can omit the file extension:
+
+```js
+res.render('index', { entries: result });
+```
+
 Now, refresh your browser and you should be able to see titles for all entries.
 
 <!-- ```js
@@ -738,11 +724,13 @@ app.get('/:entry', (req, res) => {
 })
 ``` -->
 
-### Pug
+### Pug Demo
 
 [Jade](http://jade-lang.com/) (formerly Jade) is another poopular templating language.
 
-`npm i pug`
+`npm i -pug`
+
+(No `-S` flag here as we will not be using Pug.)
 
 Save this as `index.pug` into the views folder:
 
@@ -752,7 +740,7 @@ html(lang="en")
   head
     title= "Pug"
   body
-    h1 Jade!
+    h1 Pug!
     ul
       each entry in entries
         li
@@ -865,7 +853,7 @@ Save a `index.hbs` to a new page in `views` as `story.hbs` - remove the form and
 </div>
 ```
 
-Add the following to `index.js` belwo the first route to get only the first entry:
+Add the following to `index.js` below the first `get` route to get only the first entry:
 
 ```js
 app.get('/:id', (req, res) => {
@@ -873,8 +861,8 @@ app.get('/:id', (req, res) => {
   db.collection('entries')
   .findOne({}, function(err, result){
     if (err) return console.log(err);
-    console.log(result.abstract);
-    res.send(result.abstract)
+    console.log(result.title);
+    res.send(result.title)
   })
 })
 ```
@@ -896,7 +884,7 @@ app.get('/:id', (req, res) => {
 
 Note that no matter which story you click on, it always returns the first.
 
-Demo only: use a query to get a single result:
+<!-- Demo only: use a query to get a single result:
 
 ```js
 app.get('/:id', (req, res) => {
@@ -915,9 +903,9 @@ app.get('/:id', (req, res) => {
 })
 ```
 
-Note the console - because this returns an array you would still need to run a forEach in the template.
+Note the console - because this returns an array you would still need to run a forEach in the template. -->
 
-Run findOne with a query and ObjectID.
+Find a single entry with `findOne` with ObjectID.
 
 Add this to the variables in `index.js`:
 
@@ -927,7 +915,7 @@ Add this to the variables in `index.js`:
 app.get('/:id', (req, res) => {
   const id = req.params.id;
   db.collection('entries')
-  .findOne({ '_id' : new ObjectId(id) }, function(err, result){
+  .findOne({ '_id' : new ObjectId(id) }, (err, result) => {
     log(result)
     if (err) return console.log(err);
     res.render('story', {entry: result})
