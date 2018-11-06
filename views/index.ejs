@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Articles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    input, textarea {
+      font-size: 1rem;
+      display: block;
+      margin: 1rem;
+      width: 70%;
+    }
+    button {
+      color: #fff;
+      font-size: 1rem;
+      padding: 0.5rem;
+      background: #007eb6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Now on the app store!</h1>
+  </header>
+
+  <% for(let i=0; i<entries.length; i++) { %>
+    <div class="entry">
+        <h2>
+          <a href="<%= entries[i].title %>"><%= entries[i].title %></a>
+        </h2>
+    </div>
+  <% } %>
+
+  <form action="/entries" method="POST">
+    <input type="text" placeholder="Story Title" name="title">
+    <input type="text" placeholder="Enter 1, 2 or 3" name="multimedia">
+    <textarea type="text" placeholder="Story Abstract" name="abstract"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+doctype html
+html(lang="en")
+  head
+    title= "Pug"
+  body
+    h1 Pug!
+    ul
+      each entry in entries
+        li
+          a(href='/' + entry.title)= entry.title

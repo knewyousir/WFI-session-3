@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Articles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    input, textarea {
+      font-size: 1rem;
+      display: block;
+      margin: 1rem;
+      width: 70%;
+    }
+    button {
+      color: #fff;
+      font-size: 1rem;
+      padding: 0.5rem;
+      background: #007eb6;
+    }
+    li a {
+        color: #007eb6;
+    }
+  </style>
+</head>
+<body>
+
+ {{!-- {{#each entries as |entry|}}
+<div class="entry">
+<img src="/img/{{entry.multimedia}}.jpg" />
+<a href="/{{entry._id}}">{{entry.title}}</a>
+<p>{{entry._id}}</p>
+</div>
+{{/each}} --}}
+
+<div class="entry">
+  <img src="/storyimages/{{entry.multimedia}}.jpg" />
+  <h3>{{entry.title}}</h3>
+  <p>{{entry.abstract}}</p>
+</div>
+
+  <h3>Add a Story</h3>
+  
+</body>
+</html>

@@ -4,8 +4,7 @@
   "description": "Today we continue to work with NPM and start looking at ExpressJS and server side development.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js & browser-sync start --proxy localhost:9000 --files ['app', 'views'] "
   },
   "repository": {
     "type": "git",
@@ -19,9 +18,16 @@
   },
   "homepage": "https://github.com/front-end-intermediate/session-3#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "body-parser": "^1.18.3",
+    "consolidate": "^0.15.1",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "handlebars": "^4.0.12",
+    "mongodb": "^3.1.8",
+    "pug": "^2.0.3"
   },
   "devDependencies": {
+    "browser-sync": "^2.26.3",
     "nodemon": "^1.18.6"
   }
 }
