@@ -1,0 +1,27 @@
+{
+  "name": "session-3",
+  "version": "1.0.0",
+  "description": "Today we continue to work with NPM and start looking at ExpressJS and server side development.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/front-end-intermediate/session-3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/front-end-intermediate/session-3/issues"
+  },
+  "homepage": "https://github.com/front-end-intermediate/session-3#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
